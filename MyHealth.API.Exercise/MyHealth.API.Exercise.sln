@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHealth.API.Exercise", "MyHealth.API.Exercise\MyHealth.API.Exercise.csproj", "{5C79828B-993C-402E-BA40-C2A422E549EA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHealth.API.Exercise.UnitTests", "MyHealth.API.Exercise.UnitTests\MyHealth.API.Exercise.UnitTests.csproj", "{346AA7EF-611F-4DC9-BD26-1A0B358A6014}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C79828B-993C-402E-BA40-C2A422E549EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C79828B-993C-402E-BA40-C2A422E549EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C79828B-993C-402E-BA40-C2A422E549EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C79828B-993C-402E-BA40-C2A422E549EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{346AA7EF-611F-4DC9-BD26-1A0B358A6014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{346AA7EF-611F-4DC9-BD26-1A0B358A6014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{346AA7EF-611F-4DC9-BD26-1A0B358A6014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{346AA7EF-611F-4DC9-BD26-1A0B358A6014}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3003A7C7-B96B-4DBB-A83D-93A6D5782E08}
+	EndGlobalSection
+EndGlobal
