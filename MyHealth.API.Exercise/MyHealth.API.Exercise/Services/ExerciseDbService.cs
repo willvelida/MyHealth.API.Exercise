@@ -86,7 +86,7 @@ namespace MyHealth.API.Exercise.Services
 
                 List<mdl.ExerciseEnvelope> exercises = new List<mdl.ExerciseEnvelope>();
 
-                FeedIterator<mdl.ExerciseEnvelope> feedIterator = _container.GetItemQueryIterator<mdl.ExerciseEnvelope>();
+                FeedIterator<mdl.ExerciseEnvelope> feedIterator = _container.GetItemQueryIterator<mdl.ExerciseEnvelope>(query);
 
                 while (feedIterator.HasMoreResults)
                 {

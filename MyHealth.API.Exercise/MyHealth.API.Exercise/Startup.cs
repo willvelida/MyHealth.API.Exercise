@@ -39,6 +39,7 @@ namespace MyHealth.API.Exercise
             });
             builder.Services.AddScoped<IExerciseDbService, ExerciseDbService>();
             builder.Services.AddScoped<IExerciseValidator, ExerciseValidator>();
+            builder.Services.AddScoped<IDateValidator, DateValidator>();
         }
     }
 }
