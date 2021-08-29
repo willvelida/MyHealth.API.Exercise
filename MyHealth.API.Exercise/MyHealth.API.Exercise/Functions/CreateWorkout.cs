@@ -19,19 +19,19 @@ namespace MyHealth.API.Exercise.Functions
     {
         private readonly IExerciseDbService _exerciseDbService;
         private readonly IExerciseValidator _exerciseValidator;
-        //private readonly IServiceBusHelpers _serviceBusHelpers;
+        private readonly IServiceBusHelpers _serviceBusHelpers;
         private readonly IConfiguration _configuration;
 
         public CreateWorkout(
             IExerciseDbService exerciseDbService,
             IExerciseValidator exerciseValidator,
-            //IServiceBusHelpers serviceBusHelpers,
+            IServiceBusHelpers serviceBusHelpers,
             IConfiguration configuration
             )
         {
             _exerciseDbService = exerciseDbService;
             _exerciseValidator = exerciseValidator;
-            //_serviceBusHelpers = serviceBusHelpers;
+            _serviceBusHelpers = serviceBusHelpers;
             _configuration = configuration;
         }
 
@@ -53,7 +53,7 @@ namespace MyHealth.API.Exercise.Functions
             catch (Exception ex)
             {
                 log.LogError($"Internal Server Error. Exception thrown: {ex.Message}");
-                //await _serviceBusHelpers.SendMessageToQueue(_configuration["ExceptionQueue"], ex);
+                await _serviceBusHelpers.SendMessageToQueue(_configuration["ExceptionQueue"], ex);
                 result = new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 

@@ -27,11 +27,11 @@ namespace MyHealth.API.Exercise
             builder.Services.AddSingleton<IConfiguration>(config);
             builder.Services.AddLogging();
 
-            //builder.Services.AddSingleton(sp =>
-            //{
-            //    IConfiguration configuration = sp.GetService<IConfiguration>();
-            //    return new ServiceBusHelpers(configuration["ServiceBusConnectionString"]);
-            //});
+            builder.Services.AddSingleton<IServiceBusHelpers>(sp =>
+            {
+                IConfiguration configuration = sp.GetService<IConfiguration>();
+                return new ServiceBusHelpers(configuration["ServiceBusConnectionString"]);
+            });
             builder.Services.AddSingleton(sp =>
             {
                 IConfiguration configuration = sp.GetService<IConfiguration>();
