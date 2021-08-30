@@ -58,7 +58,7 @@ namespace MyHealth.API.Exercise.Functions
             {
                 log.LogError($"Internal Server Error. Exception thrown: {ex.Message}");
                 await _serviceBusHelpers.SendMessageToQueue(_configuration["ExceptionQueue"], ex);
-                throw;
+                result = new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
             return result;
