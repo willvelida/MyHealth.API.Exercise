@@ -8,7 +8,6 @@ using MyHealth.API.Exercise.Services;
 using MyHealth.API.Exercise.UnitTests.TestExtensions;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -55,6 +54,22 @@ namespace MyHealth.API.Exercise.UnitTests.ServiceTests
         }
 
         [Fact]
+        public async Task ThrowExceptionWhenCreateWorkoutFails()
+        {
+            var fixture = new Fixture();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+
+            _containerMock.Setup(x => x.CreateItemAsync(
+                It.IsAny<mdl.ExerciseEnvelope>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>())).Throws(new Exception());
+
+            Func<Task> createWorkoutAction = async () => await _sut.CreateWorkout(testWorkout);
+            await createWorkoutAction.Should().ThrowAsync<Exception>();
+        }
+
+        [Fact]
         public async Task DeleteWorkoutItemSuccessfully()
         {
             var fixture = new Fixture();
@@ -70,6 +85,22 @@ namespace MyHealth.API.Exercise.UnitTests.ServiceTests
                 It.IsAny<PartitionKey>(),
                 It.IsAny<ItemRequestOptions>(),
                 It.IsAny<CancellationToken>()));
+        }
+
+        [Fact]
+        public async Task ThrowExceptionWhenDeleteWorkoutFails()
+        {
+            var fixture = new Fixture();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+
+            _containerMock.Setup(x => x.DeleteItemAsync<mdl.ExerciseEnvelope>(
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>())).Throws(new Exception());
+
+            Func<Task> deleteWorkoutAction = async () => await _sut.DeleteWorkout(testWorkout);
+            await deleteWorkoutAction.Should().ThrowAsync<Exception>();
         }
 
         [Fact]
@@ -95,6 +126,21 @@ namespace MyHealth.API.Exercise.UnitTests.ServiceTests
         }
 
         [Fact]
+        public async Task ThrowExceptionWhenGetAllWorkoutItemsFails()
+        {
+            var fixture = new Fixture();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+            List<mdl.ExerciseEnvelope> testExercises = new List<mdl.ExerciseEnvelope>();
+            testExercises.Add(testWorkout);
+
+            _containerMock.Setup(x => x.GetItemQueryIterator<mdl.ExerciseEnvelope>(It.IsAny<QueryDefinition>(), It.IsAny<string>(), It.IsAny<QueryRequestOptions>())).Throws(new Exception());
+
+            Func<Task> exerciseDbAction = async () => await _sut.GetAllWorkouts();
+
+            await exerciseDbAction.Should().ThrowAsync<Exception>();
+        }
+
+        [Fact]
         public async Task GetWorkoutByDateSuccessfully()
         {
             var fixture = new Fixture();
@@ -115,6 +161,21 @@ namespace MyHealth.API.Exercise.UnitTests.ServiceTests
         }
 
         [Fact]
+        public async Task ThrowExceptionWhenGetWorkoutByDateFails()
+        {
+            var fixture = new Fixture();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+            List<mdl.ExerciseEnvelope> testExercises = new List<mdl.ExerciseEnvelope>();
+            testExercises.Add(testWorkout);
+
+            _containerMock.Setup(x => x.GetItemQueryIterator<mdl.ExerciseEnvelope>(It.IsAny<QueryDefinition>(), It.IsAny<string>(), It.IsAny<QueryRequestOptions>())).Throws(new Exception());
+
+            Func<Task> exerciseDbAction = async () => await _sut.GetWorkoutByDate(testWorkout.Date);
+
+            await exerciseDbAction.Should().ThrowAsync<Exception>();
+        }
+
+        [Fact]
         public async Task UpdateWorkoutItemSuccessfully()
         {
             var fixture = new Fixture();
@@ -128,7 +189,60 @@ namespace MyHealth.API.Exercise.UnitTests.ServiceTests
                 It.IsAny<string>(),
                 It.IsAny<PartitionKey>(),
                 It.IsAny<ItemRequestOptions>(),
-                It.IsAny<CancellationToken>()));
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task ThrowExceptionWhenUpdateWorkoutFails()
+        {
+            var fixture = new Fixture();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+
+            _containerMock.Setup(x => x.ReplaceItemAsync(It.IsAny<mdl.ExerciseEnvelope>(),
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+
+            Func<Task> exerciseDbAction = async () => await _sut.UpdateWorkout(testWorkout);
+            await exerciseDbAction.Should().ThrowAsync<Exception>();
+        }
+
+        [Fact]
+        public async Task CreateWeightExerciseSuccessfully()
+        {
+            var fixture = new Fixture();
+            var testWeightExercise = fixture.Create<mdl.WeightExercise>();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+
+            _containerMock.SetupReplaceItemAsync<mdl.ExerciseEnvelope>();
+
+            await _sut.CreateWeightExercise(testWorkout, testWeightExercise);
+
+            _containerMock.Verify(x => x.ReplaceItemAsync(
+                It.IsAny<mdl.ExerciseEnvelope>(),
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task ThrowExceptionWhenCreateWeightExerciseFails()
+        {
+            var fixture = new Fixture();
+            var testWeightExercise = fixture.Create<mdl.WeightExercise>();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+
+            _containerMock.Setup(x => x.ReplaceItemAsync(It.IsAny<mdl.ExerciseEnvelope>(),
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+
+            Func<Task> exerciseDbAction = async () => await _sut.CreateWeightExercise(testWorkout, testWeightExercise);
+
+            await exerciseDbAction.Should().ThrowAsync<Exception>();
         }
     }
 }

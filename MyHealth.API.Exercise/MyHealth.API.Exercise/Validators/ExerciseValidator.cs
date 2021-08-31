@@ -1,7 +1,6 @@
-﻿using mdl = MyHealth.Common.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using mdl = MyHealth.Common.Models;
 
 namespace MyHealth.API.Exercise.Validators
 {
@@ -16,8 +15,8 @@ namespace MyHealth.API.Exercise.Validators
                 CardioExercise = new List<mdl.CardioExercise>(),
                 DocumentType = "Exercise",
                 Date = DateTime.Today.ToString("yyyy-MM-dd")
-            };   
-         
+            };
+
             return exerciseEnvelope;
         }
     }

@@ -1,9 +1,6 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Execution;
 using MyHealth.API.Exercise.Validators;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using mdl = MyHealth.Common.Models;
 
@@ -22,7 +19,7 @@ namespace MyHealth.API.Exercise.UnitTests.ValidatorTests
         public void CreateValidExerciseEnvelopeObject()
         {
             var expectedExerciseEnvelope = _sut.CreateValidExerciseEnvelope();
-            
+
             using (new AssertionScope())
             {
                 expectedExerciseEnvelope.Should().BeOfType<mdl.ExerciseEnvelope>();

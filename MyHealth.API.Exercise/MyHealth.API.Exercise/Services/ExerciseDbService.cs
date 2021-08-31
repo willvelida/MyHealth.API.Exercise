@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using mdl = MyHealth.Common.Models;
 
@@ -29,9 +28,27 @@ namespace MyHealth.API.Exercise.Services
             throw new NotImplementedException();
         }
 
-        public Task CreateWeightExercise()
+        public async Task CreateWeightExercise(mdl.ExerciseEnvelope workout, mdl.WeightExercise weightExercise)
         {
-            throw new NotImplementedException();
+            try
+            {
+                workout.WeightExercises.Add(weightExercise);
+
+                ItemRequestOptions itemRequestOptions = new ItemRequestOptions
+                {
+                    EnableContentResponseOnWrite = false
+                };
+
+                await _container.ReplaceItemAsync(
+                    workout,
+                    workout.Id,
+                    new PartitionKey(workout.DocumentType),
+                    itemRequestOptions);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task CreateWorkout(mdl.ExerciseEnvelope exerciseEnvelope)
@@ -123,7 +140,7 @@ namespace MyHealth.API.Exercise.Services
             }
             catch (Exception ex)
             {
-                throw ex;   
+                throw ex;
             }
         }
 

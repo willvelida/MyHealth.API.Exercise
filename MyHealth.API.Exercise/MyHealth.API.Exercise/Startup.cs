@@ -6,10 +6,7 @@ using MyHealth.API.Exercise;
 using MyHealth.API.Exercise.Services;
 using MyHealth.API.Exercise.Validators;
 using MyHealth.Common;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace MyHealth.API.Exercise

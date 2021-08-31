@@ -1,7 +1,4 @@
 ﻿using MyHealth.API.Exercise.Validators;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace MyHealth.API.Exercise.UnitTests.ValidatorTests

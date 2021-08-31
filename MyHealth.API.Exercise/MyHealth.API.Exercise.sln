@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHealth.API.Exercise", "MyHealth.API.Exercise\MyHealth.API.Exercise.csproj", "{5AB87787-0861-454B-B5F7-7DC6AF9D9850}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHealth.API.Exercise", "MyHealth.API.Exercise\MyHealth.API.Exercise.csproj", "{5AB87787-0861-454B-B5F7-7DC6AF9D9850}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyHealth.API.Exercise.UnitTests", "MyHealth.API.Exercise.UnitTests\MyHealth.API.Exercise.UnitTests.csproj", "{6DC34432-7DB9-45FA-945D-F8A790C3120D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyHealth.API.Exercise.UnitTests", "MyHealth.API.Exercise.UnitTests\MyHealth.API.Exercise.UnitTests.csproj", "{6DC34432-7DB9-45FA-945D-F8A790C3120D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

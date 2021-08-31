@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MyHealth.API.Exercise.Validators
+﻿namespace MyHealth.API.Exercise.Validators
 {
     public interface IDateValidator
     {

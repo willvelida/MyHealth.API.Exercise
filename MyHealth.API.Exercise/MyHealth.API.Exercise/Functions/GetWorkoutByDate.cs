@@ -1,16 +1,14 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using MyHealth.API.Exercise.Services;
 using MyHealth.API.Exercise.Validators;
 using MyHealth.Common;
-using Microsoft.Extensions.Configuration;
+using System;
+using System.Threading.Tasks;
 
 namespace MyHealth.API.Exercise.Functions
 {
@@ -35,7 +33,7 @@ namespace MyHealth.API.Exercise.Functions
 
         [FunctionName("GetWorkoutByDate")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "Workout/{date}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Workout/{date}")] HttpRequest req,
             ILogger log,
             string date)
         {
