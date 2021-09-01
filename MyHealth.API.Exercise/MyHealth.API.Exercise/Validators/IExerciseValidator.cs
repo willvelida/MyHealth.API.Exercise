@@ -1,4 +1,5 @@
-﻿using mdl = MyHealth.Common.Models;
+﻿using System.Collections.Generic;
+using mdl = MyHealth.Common.Models;
 
 namespace MyHealth.API.Exercise.Validators
 {
@@ -7,5 +8,6 @@ namespace MyHealth.API.Exercise.Validators
         mdl.ExerciseEnvelope CreateValidExerciseEnvelope();
         mdl.CardioExercise CreateValidCardioExerciseObject(mdl.CardioExercise cardioExercise);
         mdl.WeightExercise CreateValidWeightExerciseObject(mdl.WeightExercise weightExercise);
+        List<mdl.CardioExercise> ReturnCardioExercisesInExerciseEnvelope(mdl.ExerciseEnvelope exerciseEnvelope);
     }
 }

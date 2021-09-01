@@ -1,6 +1,8 @@
-﻿using FluentAssertions;
+﻿using AutoFixture;
+using FluentAssertions;
 using FluentAssertions.Execution;
 using MyHealth.API.Exercise.Validators;
+using System;
 using Xunit;
 using mdl = MyHealth.Common.Models;
 
@@ -67,6 +69,35 @@ namespace MyHealth.API.Exercise.UnitTests.ValidatorTests
                 expectedWeightExercise.Reps.Should().Be(incomingWeightExerciseRequest.Reps);
                 expectedWeightExercise.Notes.Should().Be(incomingWeightExerciseRequest.Notes);
             }
+        }
+
+        [Fact]
+        public void ReturnCardioExercisesInExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+
+            var expectedCardioExercises = _sut.ReturnCardioExercisesInExerciseEnvelope(exerciseEnvelope);
+
+            using (new AssertionScope())
+            {
+                Assert.Equal(expectedCardioExercises.Count, exerciseEnvelope.CardioExercises.Count);
+                expectedCardioExercises[0].CardioExerciseId.Should().Be(exerciseEnvelope.CardioExercises[0].CardioExerciseId);
+                expectedCardioExercises[0].Name.Should().Be(exerciseEnvelope.CardioExercises[0].Name);
+                expectedCardioExercises[0].DurationInMinutes.Should().Be(exerciseEnvelope.CardioExercises[0].DurationInMinutes);
+            }
+        }
+
+        [Fact]
+        public void ThrowExceptionWhenThereAreNoCardioExercisesInExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            exerciseEnvelope.CardioExercises = null;
+
+            var expectedCardioExercises = _sut.ReturnCardioExercisesInExerciseEnvelope(exerciseEnvelope);
+
+            expectedCardioExercises.Should().BeNull();
         }
     }
 }

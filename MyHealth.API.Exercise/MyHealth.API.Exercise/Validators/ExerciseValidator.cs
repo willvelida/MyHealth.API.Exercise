@@ -46,5 +46,20 @@ namespace MyHealth.API.Exercise.Validators
 
             return weightExerciseToPersist;
         }
+
+        public List<CardioExercise> ReturnCardioExercisesInExerciseEnvelope(ExerciseEnvelope exerciseEnvelope)
+        {
+            List<CardioExercise> cardioExercisesToReturn = new List<CardioExercise>();
+
+            if (exerciseEnvelope.CardioExercises is null)
+                return null;
+
+            foreach (var cardio in exerciseEnvelope.CardioExercises)
+            {
+                cardioExercisesToReturn.Add(cardio);
+            }
+
+            return cardioExercisesToReturn;
+        }
     }
 }
