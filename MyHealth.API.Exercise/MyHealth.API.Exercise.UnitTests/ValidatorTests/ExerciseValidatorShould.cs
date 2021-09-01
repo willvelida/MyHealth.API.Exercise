@@ -2,7 +2,6 @@
 using FluentAssertions;
 using FluentAssertions.Execution;
 using MyHealth.API.Exercise.Validators;
-using System;
 using Xunit;
 using mdl = MyHealth.Common.Models;
 
@@ -89,7 +88,7 @@ namespace MyHealth.API.Exercise.UnitTests.ValidatorTests
         }
 
         [Fact]
-        public void ThrowExceptionWhenThereAreNoCardioExercisesInExerciseEnvelope()
+        public void ReturnNullWhenThereAreNoCardioExercisesInExerciseEnvelope()
         {
             var fixture = new Fixture();
             var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
@@ -98,6 +97,37 @@ namespace MyHealth.API.Exercise.UnitTests.ValidatorTests
             var expectedCardioExercises = _sut.ReturnCardioExercisesInExerciseEnvelope(exerciseEnvelope);
 
             expectedCardioExercises.Should().BeNull();
+        }
+
+        [Fact]
+        public void ReturnWeightExercisesInExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+
+            var expectedWeightExercises = _sut.ReturnWeightExercisesInExerciseEnvelope(exerciseEnvelope);
+
+            using (new AssertionScope())
+            {
+                Assert.Equal(expectedWeightExercises.Count, exerciseEnvelope.WeightExercises.Count);
+                expectedWeightExercises[0].Reps.Should().Be(exerciseEnvelope.WeightExercises[0].Reps);
+                expectedWeightExercises[0].Name.Should().Be(exerciseEnvelope.WeightExercises[0].Name);
+                expectedWeightExercises[0].Weight.Should().Be(exerciseEnvelope.WeightExercises[0].Weight);
+                expectedWeightExercises[0].Notes.Should().Be(exerciseEnvelope.WeightExercises[0].Notes);
+                expectedWeightExercises[0].WeightExerciseId.Should().Be(exerciseEnvelope.WeightExercises[0].WeightExerciseId);
+            }
+        }
+
+        [Fact]
+        public void ReturnNullWhenThereAreNoWeightExercisesInExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            exerciseEnvelope.WeightExercises = null;
+
+            var expectedWeightExercises = _sut.ReturnWeightExercisesInExerciseEnvelope(exerciseEnvelope);
+
+            expectedWeightExercises.Should().BeNull();
         }
     }
 }

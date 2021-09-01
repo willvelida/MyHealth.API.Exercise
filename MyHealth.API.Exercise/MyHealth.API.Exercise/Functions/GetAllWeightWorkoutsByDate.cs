@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MyHealth.API.Exercise.Functions
 {
-    public class GetAllCardioWorkoutsByDate
+    public class GetAllWeightWorkoutsByDate
     {
         private readonly IDateValidator _dateValidator;
         private readonly IExerciseValidator _exerciseValidator;
@@ -20,7 +20,7 @@ namespace MyHealth.API.Exercise.Functions
         private readonly IServiceBusHelpers _serviceBusHelpers;
         private readonly IConfiguration _configuration;
 
-        public GetAllCardioWorkoutsByDate(
+        public GetAllWeightWorkoutsByDate(
             IExerciseDbService exerciseDbService,
             IExerciseValidator exerciseValidator,
             IDateValidator dateValidator,
@@ -34,9 +34,9 @@ namespace MyHealth.API.Exercise.Functions
             _configuration = configuration;
         }
 
-        [FunctionName(nameof(GetAllCardioWorkoutsByDate))]
+        [FunctionName(nameof(GetAllWeightWorkoutsByDate))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Workout/{date}/CardioExercise")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Workout/{date}/WeightExercise")] HttpRequest req,
             ILogger log,
             string date)
         {
@@ -58,15 +58,14 @@ namespace MyHealth.API.Exercise.Functions
                     return result;
                 }
 
-                // for each cardio workout log in exercise envelope, add to list to return
-                var cardioWorkouts = _exerciseValidator.ReturnCardioExercisesInExerciseEnvelope(workout);
-                if (cardioWorkouts is null || cardioWorkouts.Count == 0)
+                var weightWorkouts = _exerciseValidator.ReturnWeightExercisesInExerciseEnvelope(workout);
+                if (weightWorkouts is null || weightWorkouts.Count == 0)
                 {
                     result = new OkResult();
                     return result;
                 }
 
-                result = new OkObjectResult(cardioWorkouts);
+                result = new OkObjectResult(weightWorkouts);
             }
             catch (Exception ex)
             {
