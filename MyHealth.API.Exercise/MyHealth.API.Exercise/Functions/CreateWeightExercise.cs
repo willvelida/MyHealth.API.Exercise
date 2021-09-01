@@ -18,6 +18,7 @@ namespace MyHealth.API.Exercise.Functions
     public class CreateWeightExercise
     {
         private readonly IDateValidator _dateValidator;
+        private readonly IExerciseValidator _exerciseValidator;
         private readonly IExerciseDbService _exerciseDbService;
         private readonly IServiceBusHelpers _serviceBusHelpers;
         private readonly IConfiguration _configuration;
@@ -25,11 +26,13 @@ namespace MyHealth.API.Exercise.Functions
         public CreateWeightExercise(
             IExerciseDbService exerciseDbService,
             IDateValidator dateValidator,
+            IExerciseValidator exerciseValidator,
             IServiceBusHelpers serviceBusHelpers,
             IConfiguration configuration)
         {
             _exerciseDbService = exerciseDbService;
             _dateValidator = dateValidator;
+            _exerciseValidator = exerciseValidator;
             _serviceBusHelpers = serviceBusHelpers;
             _configuration = configuration;
         }
@@ -64,8 +67,10 @@ namespace MyHealth.API.Exercise.Functions
                 string messageRequest = await new StreamReader(req.Body).ReadToEndAsync();
                 var weightExercise = JsonConvert.DeserializeObject<mdl.WeightExercise>(messageRequest);
 
+                var parsedWeightExercise = _exerciseValidator.CreateValidWeightExerciseObject(weightExercise);
+
                 // Add weight exercise to workout
-                await _exerciseDbService.CreateWeightExercise(workout, weightExercise);
+                await _exerciseDbService.CreateWeightExercise(workout, parsedWeightExercise);
 
                 result = new NoContentResult();
             }

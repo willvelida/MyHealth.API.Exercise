@@ -22,6 +22,7 @@ namespace MyHealth.API.Exercise.UnitTests.FunctionTests
     public class CreateWeightExerciseShould
     {
         private Mock<IExerciseDbService> _exerciseDbServiceMock;
+        private Mock<IExerciseValidator> _exerciseValidatorMock;
         private Mock<IDateValidator> _dateValidatorMock;
         private Mock<IServiceBusHelpers> _serviceBusHelpersMock;
         private Mock<ILogger> _loggerMock;
@@ -34,6 +35,7 @@ namespace MyHealth.API.Exercise.UnitTests.FunctionTests
         {
             _exerciseDbServiceMock = new Mock<IExerciseDbService>();
             _dateValidatorMock = new Mock<IDateValidator>();
+            _exerciseValidatorMock = new Mock<IExerciseValidator>();
             _serviceBusHelpersMock = new Mock<IServiceBusHelpers>();
             _loggerMock = new Mock<ILogger>();
             _httpRequestMock = new Mock<HttpRequest>();
@@ -42,6 +44,7 @@ namespace MyHealth.API.Exercise.UnitTests.FunctionTests
             _func = new CreateWeightExercise(
                 _exerciseDbServiceMock.Object,
                 _dateValidatorMock.Object,
+                _exerciseValidatorMock.Object,
                 _serviceBusHelpersMock.Object,
                 _configMock.Object);
         }
@@ -104,6 +107,7 @@ namespace MyHealth.API.Exercise.UnitTests.FunctionTests
             _httpRequestMock.Setup(r => r.Body).Returns(memoryStream);
 
             _dateValidatorMock.Setup(x => x.IsDateValid(It.IsAny<string>())).Returns(true);
+            _exerciseValidatorMock.Setup(x => x.CreateValidWeightExerciseObject(It.IsAny<mdl.WeightExercise>())).Returns(weightExercise);
             _exerciseDbServiceMock.Setup(x => x.GetWorkoutByDate(It.IsAny<string>())).ReturnsAsync(workout);
 
             // Act
@@ -122,12 +126,15 @@ namespace MyHealth.API.Exercise.UnitTests.FunctionTests
             // Arrange
             var fixture = new Fixture();
             var workout = fixture.Create<mdl.ExerciseEnvelope>();
+            var weightExercise = fixture.Create<mdl.WeightExercise>();
+            workout.WeightExercises.Add(weightExercise);
             workout.Date = "2021-08-29";
             byte[] byteArray = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(workout));
             MemoryStream memoryStream = new MemoryStream(byteArray);
             _httpRequestMock.Setup(r => r.Body).Returns(memoryStream);
 
             _dateValidatorMock.Setup(x => x.IsDateValid(It.IsAny<string>())).Returns(true);
+            _exerciseValidatorMock.Setup(x => x.CreateValidWeightExerciseObject(It.IsAny<mdl.WeightExercise>())).Returns(weightExercise);
             _exerciseDbServiceMock.Setup(x => x.GetWorkoutByDate(It.IsAny<string>())).ThrowsAsync(new Exception());
 
             // Act

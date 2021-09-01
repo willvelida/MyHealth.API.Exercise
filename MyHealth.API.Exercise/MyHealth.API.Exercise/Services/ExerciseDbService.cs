@@ -27,7 +27,7 @@ namespace MyHealth.API.Exercise.Services
         {
             try
             {
-                workout.CardioExercise.Add(cardioExercise);
+                workout.CardioExercises.Add(cardioExercise);
 
                 ItemRequestOptions itemRequestOptions = new ItemRequestOptions
                 {
