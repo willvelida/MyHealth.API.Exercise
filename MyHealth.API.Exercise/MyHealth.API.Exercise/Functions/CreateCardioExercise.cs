@@ -15,14 +15,14 @@ using mdl = MyHealth.Common.Models;
 
 namespace MyHealth.API.Exercise.Functions
 {
-    public class CreateWeightExercise
+    public class CreateCardioExercise
     {
         private readonly IDateValidator _dateValidator;
         private readonly IExerciseDbService _exerciseDbService;
         private readonly IServiceBusHelpers _serviceBusHelpers;
         private readonly IConfiguration _configuration;
 
-        public CreateWeightExercise(
+        public CreateCardioExercise(
             IExerciseDbService exerciseDbService,
             IDateValidator dateValidator,
             IServiceBusHelpers serviceBusHelpers,
@@ -34,9 +34,9 @@ namespace MyHealth.API.Exercise.Functions
             _configuration = configuration;
         }
 
-        [FunctionName(nameof(CreateWeightExercise))]
+        [FunctionName(nameof(CreateCardioExercise))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Workout/{date}/WeightExercise")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Workout/{date}/CardioExercise")] HttpRequest req,
             ILogger log,
             string date)
         {
@@ -44,7 +44,6 @@ namespace MyHealth.API.Exercise.Functions
 
             try
             {
-                // validate the date
                 bool isDateValid = _dateValidator.IsDateValid(date);
                 if (isDateValid is false)
                 {
@@ -52,7 +51,6 @@ namespace MyHealth.API.Exercise.Functions
                     return result;
                 }
 
-                // get the workout out envelope
                 var workout = await _exerciseDbService.GetWorkoutByDate(date);
                 if (workout is null)
                 {
@@ -60,12 +58,10 @@ namespace MyHealth.API.Exercise.Functions
                     return result;
                 }
 
-                // parse the incoming request to a Weight Exercise
                 string messageRequest = await new StreamReader(req.Body).ReadToEndAsync();
-                var weightExercise = JsonConvert.DeserializeObject<mdl.WeightExercise>(messageRequest);
+                var cardioExercise = JsonConvert.DeserializeObject<mdl.CardioExercise>(messageRequest);
 
-                // Add weight exercise to workout
-                await _exerciseDbService.CreateWeightExercise(workout, weightExercise);
+                await _exerciseDbService.CreateCardioExercise(workout, cardioExercise);
 
                 result = new NoContentResult();
             }

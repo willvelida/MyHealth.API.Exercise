@@ -244,5 +244,42 @@ namespace MyHealth.API.Exercise.UnitTests.ServiceTests
 
             await exerciseDbAction.Should().ThrowAsync<Exception>();
         }
+
+        [Fact]
+        public async Task CreateCardioExerciseSuccessfully()
+        {
+            var fixture = new Fixture();
+            var testCardioExercise = fixture.Create<mdl.CardioExercise>();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+
+            _containerMock.SetupReplaceItemAsync<mdl.ExerciseEnvelope>();
+
+            await _sut.CreateCardioExercise(testWorkout, testCardioExercise);
+
+            _containerMock.Verify(x => x.ReplaceItemAsync(
+                It.IsAny<mdl.ExerciseEnvelope>(),
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task ThrowExceptionWhenCreateCardioExerciseFails()
+        {
+            var fixture = new Fixture();
+            var testCardioExercise = fixture.Create<mdl.CardioExercise>();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+
+            _containerMock.Setup(x => x.ReplaceItemAsync(It.IsAny<mdl.ExerciseEnvelope>(),
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+
+            Func<Task> exerciseDbAction = async () => await _sut.CreateCardioExercise(testWorkout, testCardioExercise);
+
+            await exerciseDbAction.Should().ThrowAsync<Exception>();
+        }
     }
 }

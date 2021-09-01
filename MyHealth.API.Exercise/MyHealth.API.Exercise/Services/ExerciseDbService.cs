@@ -23,9 +23,27 @@ namespace MyHealth.API.Exercise.Services
             _container = _cosmosClient.GetContainer(_configuration["DatabaseName"], _configuration["ContainerName"]);
         }
 
-        public Task CreateCardioExercise()
+        public async Task CreateCardioExercise(mdl.ExerciseEnvelope workout, mdl.CardioExercise cardioExercise)
         {
-            throw new NotImplementedException();
+            try
+            {
+                workout.CardioExercise.Add(cardioExercise);
+
+                ItemRequestOptions itemRequestOptions = new ItemRequestOptions
+                {
+                    EnableContentResponseOnWrite = false
+                };
+
+                await _container.ReplaceItemAsync(
+                    workout,
+                    workout.Id,
+                    new PartitionKey(workout.DocumentType),
+                    itemRequestOptions);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task CreateWeightExercise(mdl.ExerciseEnvelope workout, mdl.WeightExercise weightExercise)

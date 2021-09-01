@@ -15,7 +15,7 @@ namespace MyHealth.API.Exercise.Services
         Task ReadWeightExercise();
         Task UpdateWeightExercise();
         Task DeleteWeightExercise();
-        Task CreateCardioExercise();
+        Task CreateCardioExercise(mdl.ExerciseEnvelope workout, mdl.CardioExercise cardioExercise);
         Task ReadCardioExercise();
         Task UpdateCardioExercise();
         Task DeleteCardioExercise();
