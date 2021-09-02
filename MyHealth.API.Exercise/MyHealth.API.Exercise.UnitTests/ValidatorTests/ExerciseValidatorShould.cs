@@ -159,5 +159,33 @@ namespace MyHealth.API.Exercise.UnitTests.ValidatorTests
 
             expectedWeight.Should().BeNull();
         }
+
+        [Fact]
+        public void ReturnCardioExerciseByIdInExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            var actualExercise = exerciseEnvelope.CardioExercises[0];
+
+            var expectedCardio = _sut.GetCardioExerciseById(exerciseEnvelope.CardioExercises, actualExercise.CardioExerciseId);
+
+            using (new AssertionScope())
+            {
+                expectedCardio.CardioExerciseId.Should().Be(actualExercise.CardioExerciseId);
+                expectedCardio.Name.Should().Be(actualExercise.Name);
+                expectedCardio.DurationInMinutes.Should().Be(actualExercise.DurationInMinutes);
+            }
+        }
+
+        [Fact]
+        public void ReturnNullWhenThereAreNoCardioExercisesWithProvidedIdInCardioExerciseList()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+
+            var expectedCardio = _sut.GetCardioExerciseById(exerciseEnvelope.CardioExercises, "1");
+
+            expectedCardio.Should().BeNull();
+        }
     }
 }

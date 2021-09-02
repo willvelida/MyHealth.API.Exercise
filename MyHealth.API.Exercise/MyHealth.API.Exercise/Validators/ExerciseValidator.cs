@@ -48,6 +48,13 @@ namespace MyHealth.API.Exercise.Validators
             return weightExerciseToPersist;
         }
 
+        public CardioExercise GetCardioExerciseById(List<CardioExercise> cardioExercises, string cardioExerciseId)
+        {
+            var cardioExercise = cardioExercises.Where(x => x.CardioExerciseId == cardioExerciseId).FirstOrDefault();
+
+            return cardioExercise;
+        }
+
         public WeightExercise GetWeightExerciseById(List<WeightExercise> weightExercises, string weightExerciseId)
         {
             var weightExercise = weightExercises.Where(x => x.WeightExerciseId == weightExerciseId).FirstOrDefault();
