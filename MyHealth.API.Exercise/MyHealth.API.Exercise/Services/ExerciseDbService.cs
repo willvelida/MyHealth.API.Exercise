@@ -172,6 +172,10 @@ namespace MyHealth.API.Exercise.Services
 
                 return exercise.Resource;
             }
+            catch (CosmosException cex ) when (cex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
             catch (Exception ex)
             {
                 throw ex;

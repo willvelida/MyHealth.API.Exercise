@@ -300,6 +300,26 @@ namespace MyHealth.API.Exercise.UnitTests.ServiceTests
         }
 
         [Fact]
+        public async Task ReturnNullWhenGetWorkoutByIdReturnsNull()
+        {
+            var fixture = new Fixture();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+
+            var expectedResponse = new Mock<ItemResponse<mdl.ExerciseEnvelope>>();
+            expectedResponse.Setup(x => x.StatusCode).Returns(System.Net.HttpStatusCode.NotFound);
+
+            _containerMock.Setup(x => x.ReadItemAsync<mdl.ExerciseEnvelope>(
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse.Object);
+
+            var response = await _sut.GetWorkoutById(testWorkout.Id);
+
+            response.Should().BeNull();
+        }
+
+        [Fact]
         public async Task ThrowExceptionWhenGetWorkoutItemByIdFails()
         {
             var fixture = new Fixture();
