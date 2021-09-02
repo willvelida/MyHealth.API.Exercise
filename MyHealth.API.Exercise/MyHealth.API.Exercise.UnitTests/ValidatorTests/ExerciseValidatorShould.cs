@@ -276,5 +276,100 @@ namespace MyHealth.API.Exercise.UnitTests.ValidatorTests
 
             expectedUpdatedWorkout.Should().BeNull();
         }
+
+        [Fact]
+        public void ReturnWeightExercieByIdInExerciseEnvelopeWhenPassingThroughExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            var actualExercise = exerciseEnvelope.WeightExercises[0];
+
+            var expectedWeight = _sut.GetWeightExerciseById(exerciseEnvelope, actualExercise.WeightExerciseId);
+
+            using (new AssertionScope())
+            {
+                expectedWeight.Name.Should().Be(actualExercise.Name);
+                expectedWeight.Notes.Should().Be(actualExercise.Notes);
+                expectedWeight.WeightExerciseId.Should().Be(actualExercise.WeightExerciseId);
+                expectedWeight.Reps.Should().Be(actualExercise.Reps);
+                expectedWeight.Weight.Should().Be(actualExercise.Weight);
+            }
+        }
+
+        [Fact]
+        public void ReturnNullWhenThereAreNoWeightExercisesWithProvidedIdInWeightExerciseListWhenPassingThroughExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            exerciseEnvelope.WeightExercises = null;
+
+            var expectedWeight = _sut.GetWeightExerciseById(exerciseEnvelope, "1");
+
+            expectedWeight.Should().BeNull();
+        }
+
+        [Fact]
+        public void ReturnNullWhenThereAreZeroWeightExercisesWithProvidedIdInWeightExerciseListWhenPassingThroughExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            exerciseEnvelope.WeightExercises = new List<mdl.WeightExercise>();
+
+            var expectedWeight = _sut.GetWeightExerciseById(exerciseEnvelope, "1");
+
+            expectedWeight.Should().BeNull();
+        }
+
+        [Fact]
+        public void UpdateWeightExerciseInExerciseEnvelope()
+        {
+            var exerciseEnvelope = new mdl.ExerciseEnvelope
+            {
+                WeightExercises = new List<mdl.WeightExercise>()
+                {
+                    new mdl.WeightExercise
+                    {
+                        WeightExerciseId = Guid.NewGuid().ToString(),
+                        Name = "Bench",
+                        Weight = 90.0,
+                        Reps = 8,
+                        Notes = "This was fun"
+                    }
+                }
+            };
+
+            var weightEnvelope = new mdl.WeightExercise
+            {
+                WeightExerciseId = exerciseEnvelope.WeightExercises[0].WeightExerciseId,
+                Name = "Bench Press",
+                Weight = 100.0,
+                Reps = 6,
+                Notes = "This was hard"
+            };
+
+            var expectedUpdatedWorkout = _sut.UpdateWeightExerciseInExerciseEnvelope(exerciseEnvelope, weightEnvelope);
+
+            using (new AssertionScope())
+            {
+                expectedUpdatedWorkout.WeightExercises[0].Name.Should().Be(weightEnvelope.Name);
+                expectedUpdatedWorkout.WeightExercises[0].Notes.Should().Be(weightEnvelope.Notes);
+                expectedUpdatedWorkout.WeightExercises[0].WeightExerciseId.Should().Be(weightEnvelope.WeightExerciseId);
+                expectedUpdatedWorkout.WeightExercises[0].Reps.Should().Be(weightEnvelope.Reps);
+                expectedUpdatedWorkout.WeightExercises[0].Weight.Should().Be(weightEnvelope.Weight);
+            }
+        }
+
+        [Fact]
+        public void ReturnNullWhenWeightToRemoveDoesNotExist()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            var weightEnvelope = fixture.Create<mdl.WeightExercise>();
+            weightEnvelope.WeightExerciseId = "1";
+
+            var expectedUpdatedWorkout = _sut.UpdateWeightExerciseInExerciseEnvelope(exerciseEnvelope, weightEnvelope);
+
+            expectedUpdatedWorkout.Should().BeNull();
+        }
     }
 }

@@ -182,21 +182,6 @@ namespace MyHealth.API.Exercise.Services
             }
         }
 
-        public Task ReadCardioExercise()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task ReadWeightExercise()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateWeightExercise()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task UpdateWorkout(mdl.ExerciseEnvelope exerciseEnvelope)
         {
             try

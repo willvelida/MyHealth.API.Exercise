@@ -1,22 +1,22 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using MyHealth.API.Exercise.Models;
-using MyHealth.API.Exercise.Services;
-using MyHealth.API.Exercise.Validators;
-using MyHealth.Common;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using MyHealth.API.Exercise.Services;
+using MyHealth.API.Exercise.Validators;
+using MyHealth.Common;
+using AutoMapper;
+using Microsoft.Extensions.Configuration;
+using MyHealth.API.Exercise.Models;
 
 namespace MyHealth.API.Exercise.Functions
 {
-    public class UpdateCardioExercise
+    public class UpdateWeightExercise
     {
         private readonly IExerciseDbService _exerciseDbService;
         private readonly IDateValidator _dateValidator;
@@ -25,7 +25,7 @@ namespace MyHealth.API.Exercise.Functions
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public UpdateCardioExercise(
+        public UpdateWeightExercise(
             IExerciseDbService exerciseDbService,
             IDateValidator dateValidator,
             IExerciseValidator exerciseValidator,
@@ -41,12 +41,12 @@ namespace MyHealth.API.Exercise.Functions
             _configuration = configuration;
         }
 
-        [FunctionName(nameof(UpdateCardioExercise))]
+        [FunctionName(nameof(UpdateWeightExercise))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Workout/{date}/CardioExercise/{cardioExerciseId}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Workout/{date}/WeightExercise/{weightExerciseId}")] HttpRequest req,
             ILogger log,
             string date,
-            string cardioExerciseId)
+            string weightExerciseId)
         {
             IActionResult result;
 
@@ -66,19 +66,18 @@ namespace MyHealth.API.Exercise.Functions
                     return result;
                 }
 
-                var cardioExerciseToUpdate = _exerciseValidator.GetCardioExerciseById(workout, cardioExerciseId);
-                if (cardioExerciseToUpdate is null)
+                var weightExerciseToUpdate = _exerciseValidator.GetWeightExerciseById(workout, weightExerciseId);
+                if (weightExerciseToUpdate is null)
                 {
                     result = new NoContentResult();
                     return result;
                 }
 
                 string messageRequest = await new StreamReader(req.Body).ReadToEndAsync();
-                var cardioRequest = JsonConvert.DeserializeObject<CardioExerciseRequestDto>(messageRequest);
-                var updatedCardioExercise = _mapper.Map(cardioRequest, cardioExerciseToUpdate);
+                var weightRequest = JsonConvert.DeserializeObject<WeightExerciseRequestDto>(messageRequest);
+                var updatedWeightExercise = _mapper.Map(weightRequest, weightExerciseToUpdate);
 
-                // update the cardio exercise in the workout envelope
-                var updatedWorkout = _exerciseValidator.UpdateCardioExerciseInExerciseEnvelope(workout, updatedCardioExercise);
+                var updatedWorkout = _exerciseValidator.UpdateWeightExerciseInExerciseEnvelope(workout, updatedWeightExercise);
                 if (updatedWorkout is null)
                 {
                     result = new NotFoundResult();

@@ -27,6 +27,7 @@ namespace MyHealth.API.Exercise
             builder.Services.AddAutoMapper(config =>
             {
                 config.AddProfile(new MapCardioExerciseRequestDtoToCardioExercise());
+                config.AddProfile(new MapWeightExerciseRequestDtoToWeightExercise());
             });
 
             builder.Services.AddSingleton<IServiceBusHelpers>(sp =>
