@@ -1,6 +1,7 @@
 ﻿using MyHealth.Common.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using mdl = MyHealth.Common.Models;
 
 namespace MyHealth.API.Exercise.Validators
@@ -45,6 +46,13 @@ namespace MyHealth.API.Exercise.Validators
             };
 
             return weightExerciseToPersist;
+        }
+
+        public WeightExercise GetWeightExerciseById(List<WeightExercise> weightExercises, string weightExerciseId)
+        {
+            var weightExercise = weightExercises.Where(x => x.WeightExerciseId == weightExerciseId).FirstOrDefault();
+
+            return weightExercise;
         }
 
         public List<CardioExercise> ReturnCardioExercisesInExerciseEnvelope(ExerciseEnvelope exerciseEnvelope)

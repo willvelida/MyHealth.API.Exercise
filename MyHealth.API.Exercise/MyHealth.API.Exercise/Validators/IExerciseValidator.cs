@@ -10,5 +10,6 @@ namespace MyHealth.API.Exercise.Validators
         mdl.WeightExercise CreateValidWeightExerciseObject(mdl.WeightExercise weightExercise);
         List<mdl.CardioExercise> ReturnCardioExercisesInExerciseEnvelope(mdl.ExerciseEnvelope exerciseEnvelope);
         List<mdl.WeightExercise> ReturnWeightExercisesInExerciseEnvelope(mdl.ExerciseEnvelope exerciseEnvelope);
+        mdl.WeightExercise GetWeightExerciseById(List<mdl.WeightExercise> weightExercises, string weightExerciseId);
     }
 }

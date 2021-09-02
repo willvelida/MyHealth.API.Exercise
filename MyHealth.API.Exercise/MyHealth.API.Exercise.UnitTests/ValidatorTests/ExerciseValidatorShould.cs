@@ -129,5 +129,35 @@ namespace MyHealth.API.Exercise.UnitTests.ValidatorTests
 
             expectedWeightExercises.Should().BeNull();
         }
+
+        [Fact]
+        public void ReturnWeightExceriseByIdInExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            var actualExercise = exerciseEnvelope.WeightExercises[0];
+
+            var expectedWeight = _sut.GetWeightExerciseById(exerciseEnvelope.WeightExercises, actualExercise.WeightExerciseId);
+
+            using (new AssertionScope())
+            {
+                expectedWeight.Name.Should().Be(actualExercise.Name);
+                expectedWeight.Notes.Should().Be(actualExercise.Notes);
+                expectedWeight.WeightExerciseId.Should().Be(actualExercise.WeightExerciseId);
+                expectedWeight.Reps.Should().Be(actualExercise.Reps);
+                expectedWeight.Weight.Should().Be(actualExercise.Weight);
+            }
+        }
+
+        [Fact]
+        public void ReturnNullWhenThereAreNoWeightExercisesWithProvidedIdInWeightExerciseList()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+
+            var expectedWeight = _sut.GetWeightExerciseById(exerciseEnvelope.WeightExercises, "1");
+
+            expectedWeight.Should().BeNull();
+        }
     }
 }
