@@ -2,6 +2,8 @@
 using FluentAssertions;
 using FluentAssertions.Execution;
 using MyHealth.API.Exercise.Validators;
+using System;
+using System.Collections.Generic;
 using Xunit;
 using mdl = MyHealth.Common.Models;
 
@@ -178,6 +180,23 @@ namespace MyHealth.API.Exercise.UnitTests.ValidatorTests
         }
 
         [Fact]
+        public void ReturnCardioExerciseByIdInExerciseEnvelopePassingThroughExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            var actualExercise = exerciseEnvelope.CardioExercises[0];
+
+            var expectedCardio = _sut.GetCardioExerciseById(exerciseEnvelope, actualExercise.CardioExerciseId);
+
+            using (new AssertionScope())
+            {
+                expectedCardio.CardioExerciseId.Should().Be(actualExercise.CardioExerciseId);
+                expectedCardio.Name.Should().Be(actualExercise.Name);
+                expectedCardio.DurationInMinutes.Should().Be(actualExercise.DurationInMinutes);
+            }
+        }
+
+        [Fact]
         public void ReturnNullWhenThereAreNoCardioExercisesWithProvidedIdInCardioExerciseList()
         {
             var fixture = new Fixture();
@@ -186,6 +205,76 @@ namespace MyHealth.API.Exercise.UnitTests.ValidatorTests
             var expectedCardio = _sut.GetCardioExerciseById(exerciseEnvelope.CardioExercises, "1");
 
             expectedCardio.Should().BeNull();
+        }
+
+        [Fact]
+        public void ReturnNullWhenThereAreNoCardioExercisesWithProvidedIdInCardioExerciseListWhenPassingThroughExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            exerciseEnvelope.CardioExercises = null;
+
+            var expectedCardio = _sut.GetCardioExerciseById(exerciseEnvelope, "1");
+
+            expectedCardio.Should().BeNull();
+        }
+
+        [Fact]
+        public void ReturnNullWhenThereAreZeroCardioExercisesWithProvidedIdInCardioExerciseListWhenPassingThroughExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            exerciseEnvelope.CardioExercises = new List<mdl.CardioExercise>();
+
+            var expectedCardio = _sut.GetCardioExerciseById(exerciseEnvelope, "1");
+
+            expectedCardio.Should().BeNull();
+        }
+
+        [Fact]
+        public void UpdateCardioExerciseInExerciseEnvelope()
+        {
+            var exerciseEnvelope = new mdl.ExerciseEnvelope
+            {
+                CardioExercises = new List<mdl.CardioExercise>()
+                {
+                    new mdl.CardioExercise
+                    {
+                        CardioExerciseId = Guid.NewGuid().ToString(),
+                        Name = "Rowing",
+                        DurationInMinutes = 30
+                    }
+                }
+            };
+
+            var cardioEnvelope = new mdl.CardioExercise
+            {
+                CardioExerciseId = exerciseEnvelope.CardioExercises[0].CardioExerciseId,
+                Name = "Jogging",
+                DurationInMinutes = 60
+            };
+
+            var expectedUpdatedExercise = _sut.UpdateCardioExerciseInExerciseEnvelope(exerciseEnvelope, cardioEnvelope);
+
+            using (new AssertionScope())
+            {
+                expectedUpdatedExercise.CardioExercises[0].CardioExerciseId.Should().Be(cardioEnvelope.CardioExerciseId);
+                expectedUpdatedExercise.CardioExercises[0].Name.Should().Be(cardioEnvelope.Name);
+                expectedUpdatedExercise.CardioExercises[0].DurationInMinutes.Should().Be(cardioEnvelope.DurationInMinutes);
+            }
+        }
+
+        [Fact]
+        public void ReturnNullWhenCardioToRemoveDoesNotExist()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            var cardioEnvelope = fixture.Create<mdl.CardioExercise>();
+            cardioEnvelope.CardioExerciseId = "1";
+
+            var expectedUpdatedWorkout = _sut.UpdateCardioExerciseInExerciseEnvelope(exerciseEnvelope, cardioEnvelope);
+
+            expectedUpdatedWorkout.Should().BeNull();
         }
     }
 }

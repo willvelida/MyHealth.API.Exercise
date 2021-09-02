@@ -55,6 +55,20 @@ namespace MyHealth.API.Exercise.Validators
             return cardioExercise;
         }
 
+        public CardioExercise GetCardioExerciseById(ExerciseEnvelope exercise, string cardioExerciseId)
+        {
+            var cardioExercises = exercise.CardioExercises;
+            if (cardioExercises is null)
+                return null;
+
+            if (cardioExercises.Count == 0)
+                return null;
+
+            var cardioExercise = cardioExercises.Where(x => x.CardioExerciseId == cardioExerciseId).FirstOrDefault();
+
+            return cardioExercise;
+        }
+
         public WeightExercise GetWeightExerciseById(List<WeightExercise> weightExercises, string weightExerciseId)
         {
             var weightExercise = weightExercises.Where(x => x.WeightExerciseId == weightExerciseId).FirstOrDefault();
@@ -90,6 +104,20 @@ namespace MyHealth.API.Exercise.Validators
             }
 
             return weightExercisesToReturn;
+        }
+
+        public ExerciseEnvelope UpdateCardioExerciseInExerciseEnvelope(ExerciseEnvelope exerciseToUpdate, CardioExercise cardioExercise)
+        {
+            var cardioExerciseToRemove = exerciseToUpdate.CardioExercises.Where(x => x.CardioExerciseId == cardioExercise.CardioExerciseId).FirstOrDefault();
+
+            if (cardioExerciseToRemove is null)
+                return null;
+
+            exerciseToUpdate.CardioExercises.Remove(cardioExerciseToRemove);
+
+            exerciseToUpdate.CardioExercises.Add(cardioExercise);
+
+            return exerciseToUpdate;
         }
     }
 }

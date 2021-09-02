@@ -1,42 +1,49 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using MyHealth.API.Exercise.Models;
 using MyHealth.API.Exercise.Services;
 using MyHealth.API.Exercise.Validators;
 using MyHealth.Common;
+using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace MyHealth.API.Exercise.Functions
 {
-    public class GetCardioWorkoutById
+    public class UpdateCardioExercise
     {
         private readonly IExerciseDbService _exerciseDbService;
         private readonly IDateValidator _dateValidator;
         private readonly IExerciseValidator _exerciseValidator;
         private readonly IServiceBusHelpers _serviceBusHelpers;
+        private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public GetCardioWorkoutById(
+        public UpdateCardioExercise(
             IExerciseDbService exerciseDbService,
             IDateValidator dateValidator,
             IExerciseValidator exerciseValidator,
             IServiceBusHelpers serviceBusHelpers,
+            IMapper mapper,
             IConfiguration configuration)
         {
             _exerciseDbService = exerciseDbService;
             _exerciseValidator = exerciseValidator;
             _dateValidator = dateValidator;
             _serviceBusHelpers = serviceBusHelpers;
+            _mapper = mapper;
             _configuration = configuration;
         }
 
-        [FunctionName(nameof(GetCardioWorkoutById))]
+        [FunctionName(nameof(UpdateCardioExercise))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Workout/{date}/CardioExercise/{cardioExerciseId}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Workout/{date}/CardioExercise/{cardioExerciseId}")] HttpRequest req,
             ILogger log,
             string date,
             string cardioExerciseId)
@@ -45,6 +52,7 @@ namespace MyHealth.API.Exercise.Functions
 
             try
             {
+                // validate date
                 bool isDateValid = _dateValidator.IsDateValid(date);
                 if (isDateValid is false)
                 {
@@ -52,6 +60,7 @@ namespace MyHealth.API.Exercise.Functions
                     return result;
                 }
 
+                // get workout document
                 var workout = await _exerciseDbService.GetWorkoutByDate(date);
                 if (workout is null)
                 {
@@ -59,21 +68,29 @@ namespace MyHealth.API.Exercise.Functions
                     return result;
                 }
 
-                var cardioWorkouts = _exerciseValidator.ReturnCardioExercisesInExerciseEnvelope(workout);
-                if (cardioWorkouts is null)
+                // get cardio exercise
+                var cardioExerciseToUpdate = _exerciseValidator.GetCardioExerciseById(workout, cardioExerciseId);
+                if (cardioExerciseToUpdate is null)
                 {
                     result = new NoContentResult();
                     return result;
                 }
 
-                var cardioWorkoutResponse = _exerciseValidator.GetCardioExerciseById(cardioWorkouts, cardioExerciseId);
-                if (cardioWorkoutResponse is null)
+                // parse incoming cardioExercise
+                string messageRequest = await new StreamReader(req.Body).ReadToEndAsync();
+                var cardioRequest = JsonConvert.DeserializeObject<CardioExerciseRequestDto>(messageRequest);
+                var updatedCardioExercise = _mapper.Map(cardioRequest, cardioExerciseToUpdate);
+
+                // update the cardio exercise in the workout envelope
+                var updatedWorkout = _exerciseValidator.UpdateCardioExerciseInExerciseEnvelope(workout, updatedCardioExercise);
+                if (updatedWorkout is null)
                 {
-                    result = new NoContentResult();
+                    result = new NotFoundResult();
                     return result;
                 }
 
-                result = new OkObjectResult(cardioWorkoutResponse);
+                await _exerciseDbService.UpdateWorkout(updatedWorkout);
+                result = new NoContentResult();
             }
             catch (Exception ex)
             {

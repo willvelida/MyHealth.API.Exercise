@@ -192,11 +192,6 @@ namespace MyHealth.API.Exercise.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateCardioExercise()
-        {
-            throw new NotImplementedException();
-        }
-
         public Task UpdateWeightExercise()
         {
             throw new NotImplementedException();

@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyHealth.API.Exercise;
+using MyHealth.API.Exercise.Mappers;
 using MyHealth.API.Exercise.Services;
 using MyHealth.API.Exercise.Validators;
 using MyHealth.Common;
@@ -23,6 +24,10 @@ namespace MyHealth.API.Exercise
 
             builder.Services.AddSingleton<IConfiguration>(config);
             builder.Services.AddLogging();
+            builder.Services.AddAutoMapper(config =>
+            {
+                config.AddProfile(new MapCardioExerciseRequestDtoToCardioExercise());
+            });
 
             builder.Services.AddSingleton<IServiceBusHelpers>(sp =>
             {
