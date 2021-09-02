@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
+using MyHealth.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -155,6 +156,21 @@ namespace MyHealth.API.Exercise.Services
                 }
 
                 return exercises.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<ExerciseEnvelope> GetWorkoutById(string id)
+        {
+            try
+            {
+                var exercise = await _container.ReadItemAsync<mdl.ExerciseEnvelope>(id,
+                    new PartitionKey("Exercise"));
+
+                return exercise.Resource;
             }
             catch (Exception ex)
             {

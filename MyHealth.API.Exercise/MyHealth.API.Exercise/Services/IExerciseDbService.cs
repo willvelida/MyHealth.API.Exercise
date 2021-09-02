@@ -8,6 +8,7 @@ namespace MyHealth.API.Exercise.Services
     {
         Task CreateWorkout(mdl.ExerciseEnvelope exerciseEnvelope);
         Task<mdl.ExerciseEnvelope> GetWorkoutByDate(string date);
+        Task<mdl.ExerciseEnvelope> GetWorkoutById(string id);
         Task<List<mdl.ExerciseEnvelope>> GetAllWorkouts();
         Task UpdateWorkout(mdl.ExerciseEnvelope exerciseEnvelope);
         Task DeleteWorkout(mdl.ExerciseEnvelope exerciseEnvelope);

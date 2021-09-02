@@ -281,5 +281,39 @@ namespace MyHealth.API.Exercise.UnitTests.ServiceTests
 
             await exerciseDbAction.Should().ThrowAsync<Exception>();
         }
+
+        [Fact]
+        public async Task GetWorkoutItemByIdSuccessfully()
+        {
+            var fixture = new Fixture();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+
+            _containerMock.SetupReadItemAsync<mdl.ExerciseEnvelope>(testWorkout);
+
+            await _sut.GetWorkoutById(testWorkout.Id);
+
+            _containerMock.Verify(x => x.ReadItemAsync<mdl.ExerciseEnvelope>(
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task ThrowExceptionWhenGetWorkoutItemByIdFails()
+        {
+            var fixture = new Fixture();
+            var testWorkout = fixture.Create<mdl.ExerciseEnvelope>();
+
+            _containerMock.Setup(x => x.ReadItemAsync<mdl.ExerciseEnvelope>(
+                It.IsAny<string>(),
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+
+            Func<Task> exerciseDbAction = async () => await _sut.GetWorkoutById(testWorkout.Id);
+
+            await exerciseDbAction.Should().ThrowAsync<Exception>();
+        }
     }
 }
