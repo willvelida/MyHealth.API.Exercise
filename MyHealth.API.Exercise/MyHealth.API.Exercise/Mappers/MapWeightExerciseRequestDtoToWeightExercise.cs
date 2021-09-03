@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
 using MyHealth.API.Exercise.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using mdl = MyHealth.Common.Models;
 
 namespace MyHealth.API.Exercise.Mappers

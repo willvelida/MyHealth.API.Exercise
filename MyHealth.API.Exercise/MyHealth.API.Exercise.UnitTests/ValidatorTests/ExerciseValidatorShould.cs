@@ -371,5 +371,28 @@ namespace MyHealth.API.Exercise.UnitTests.ValidatorTests
 
             expectedUpdatedWorkout.Should().BeNull();
         }
+
+        [Fact]
+        public void RemoveCardioExerciseWhenCallingRemoveCardioExerciseFromExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+            var cardioToRemove = exerciseEnvelope.CardioExercises[0];
+
+            var expectedUpdatedWorkout = _sut.RemoveCardioExerciseFromExerciseEnvelope(exerciseEnvelope, cardioToRemove);
+
+            Assert.Equal(2, expectedUpdatedWorkout.CardioExercises.Count);
+        }
+
+        [Fact]
+        public void ReturnNullWhenCardioExerciseIsNullWhenRemovingCardioExerciseFromExerciseEnvelope()
+        {
+            var fixture = new Fixture();
+            var exerciseEnvelope = fixture.Create<mdl.ExerciseEnvelope>();
+
+            var expectedUpdatedWorkout = _sut.RemoveCardioExerciseFromExerciseEnvelope(exerciseEnvelope, new mdl.CardioExercise());
+
+            expectedUpdatedWorkout.Should().BeNull();
+        }
     }
 }

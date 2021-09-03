@@ -1,52 +1,45 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MyHealth.API.Exercise.Models;
 using MyHealth.API.Exercise.Services;
 using MyHealth.API.Exercise.Validators;
 using MyHealth.Common;
-using Newtonsoft.Json;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace MyHealth.API.Exercise.Functions
 {
-    public class UpdateWeightExercise
+    public class DeleteCardioWorkoutById
     {
         private readonly IExerciseDbService _exerciseDbService;
         private readonly IDateValidator _dateValidator;
         private readonly IExerciseValidator _exerciseValidator;
         private readonly IServiceBusHelpers _serviceBusHelpers;
-        private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public UpdateWeightExercise(
+        public DeleteCardioWorkoutById(
             IExerciseDbService exerciseDbService,
             IDateValidator dateValidator,
             IExerciseValidator exerciseValidator,
             IServiceBusHelpers serviceBusHelpers,
-            IMapper mapper,
             IConfiguration configuration)
         {
             _exerciseDbService = exerciseDbService;
             _exerciseValidator = exerciseValidator;
             _dateValidator = dateValidator;
             _serviceBusHelpers = serviceBusHelpers;
-            _mapper = mapper;
             _configuration = configuration;
         }
 
-        [FunctionName(nameof(UpdateWeightExercise))]
+        [FunctionName(nameof(DeleteCardioWorkoutById))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Workout/{date}/WeightExercise/{weightExerciseId}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "Workout/{date}/CardioExercise/{cardioExerciseId}")] HttpRequest req,
             ILogger log,
             string date,
-            string weightExerciseId)
+            string cardioExerciseId)
         {
             IActionResult result;
 
@@ -66,18 +59,14 @@ namespace MyHealth.API.Exercise.Functions
                     return result;
                 }
 
-                var weightExerciseToUpdate = _exerciseValidator.GetWeightExerciseById(workout, weightExerciseId);
-                if (weightExerciseToUpdate is null)
+                var cardioExerciseToDelete = _exerciseValidator.GetCardioExerciseById(workout, cardioExerciseId);
+                if (cardioExerciseToDelete is null)
                 {
-                    result = new NoContentResult();
+                    result = new NotFoundResult();
                     return result;
                 }
 
-                string messageRequest = await new StreamReader(req.Body).ReadToEndAsync();
-                var weightRequest = JsonConvert.DeserializeObject<WeightExerciseRequestDto>(messageRequest);
-                var updatedWeightExercise = _mapper.Map(weightRequest, weightExerciseToUpdate);
-
-                var updatedWorkout = _exerciseValidator.UpdateWeightExerciseInExerciseEnvelope(workout, updatedWeightExercise);
+                var updatedWorkout = _exerciseValidator.RemoveCardioExerciseFromExerciseEnvelope(workout, cardioExerciseToDelete);
                 if (updatedWorkout is null)
                 {
                     result = new NotFoundResult();

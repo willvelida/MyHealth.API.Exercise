@@ -90,6 +90,18 @@ namespace MyHealth.API.Exercise.Validators
             return weightExercise;
         }
 
+        public ExerciseEnvelope RemoveCardioExerciseFromExerciseEnvelope(ExerciseEnvelope exerciseEnvelope, CardioExercise cardioExercise)
+        {
+            var cardioExerciseToRemove = exerciseEnvelope.CardioExercises.Where(x => x.CardioExerciseId == cardioExercise.CardioExerciseId).FirstOrDefault();
+
+            if (cardioExerciseToRemove is null)
+                return null;
+
+            exerciseEnvelope.CardioExercises.Remove(cardioExerciseToRemove);
+
+            return exerciseEnvelope;
+        }
+
         public List<CardioExercise> ReturnCardioExercisesInExerciseEnvelope(ExerciseEnvelope exerciseEnvelope)
         {
             List<CardioExercise> cardioExercisesToReturn = new List<CardioExercise>();

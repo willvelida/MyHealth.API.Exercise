@@ -16,5 +16,6 @@ namespace MyHealth.API.Exercise.Validators
         mdl.CardioExercise GetCardioExerciseById(mdl.ExerciseEnvelope exercise, string cardioExerciseId);
         mdl.ExerciseEnvelope UpdateCardioExerciseInExerciseEnvelope(mdl.ExerciseEnvelope exerciseToUpdate, mdl.CardioExercise cardioExercise);
         mdl.ExerciseEnvelope UpdateWeightExerciseInExerciseEnvelope(mdl.ExerciseEnvelope exerciseToUpdate, mdl.WeightExercise weightExercise);
+        mdl.ExerciseEnvelope RemoveCardioExerciseFromExerciseEnvelope(mdl.ExerciseEnvelope exerciseEnvelope, mdl.CardioExercise cardioExercise);
     }
 }

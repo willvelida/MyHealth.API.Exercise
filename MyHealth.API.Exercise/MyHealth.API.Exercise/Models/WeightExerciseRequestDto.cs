@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MyHealth.API.Exercise.Models
+﻿namespace MyHealth.API.Exercise.Models
 {
     public class WeightExerciseRequestDto
     {
