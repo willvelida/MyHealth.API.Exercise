@@ -90,16 +90,6 @@ namespace MyHealth.API.Exercise.Services
             }
         }
 
-        public Task DeleteCardioExercise()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteWeightExercise()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task DeleteWorkout(mdl.ExerciseEnvelope exerciseEnvelope)
         {
             try
